@@ -15,7 +15,7 @@ use rand::{seq::SliceRandom, thread_rng};
 
 //This #[derive(Debug)] statement is giving the struct an attribute, something where 'derive'
 //is adding instructions at compile time to this struct, which enables it to have the Debug trait,
-//which allows it to work in a formatted string using a syntax like "Here is your dec: {:?}", deck
+//which allows it to work in a formatted string using a syntax like "Here is your deck: {:?}", deck
 #[derive(Debug)]
 struct Deck {
     //vectors can grow and shrink in size, while arrays have fixed lengths
@@ -32,6 +32,7 @@ impl Deck {
         //Rather than typing out all the cards one at a time, it can be done as a nested for loop
 
         //these are arrays and have a fixed length
+        //the auto formatter broke the array declaration into multiple lines and added a trailing comma
         let suits = ["Hearts", "Diamonds", "Clubs", "Spades"];
         let values = [
             "Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack",
@@ -74,13 +75,20 @@ impl Deck {
         Deck { cards }
     }
 
-    //&self needs to be changed to &mut self because the deck being referenced by &self will change 
+    //&self needs to be changed to &mut self because the deck being referenced by &self will change
     fn shuffle(&mut self) {
         let mut rng = thread_rng();
-        
+
         //this shuffle method comes from using rand::seq::SliceRandom which modifies vectors to have a shuffle method
         //the &mut rng is a reference to the rng object which is intended to be mutable
         self.cards.shuffle(&mut rng);
+    }
+
+    fn deal(&mut self, mut num_cards: usize) -> Vec<String> {
+        if num_cards > self.cards.len() {
+            num_cards = self.cards.len();
+        }
+        self.cards.split_off(self.cards.len() - num_cards)
     }
 }
 
@@ -97,6 +105,19 @@ fn main() {
     //but now it is able to print this struct to the console
     //adding the # to the formatter making it {:#?} makes it print in a 'pretty' way which is easier for a human to read
     println!("Here's your deck: {:#?}", deck);
+
+    //enabled error handling for asking for too many cards,
+    //but asking for a negative number of cards gives an error
+    let number_of_cards = 5;
+
+    let some_cards = deck.deal(number_of_cards);
+
+    println!("Dealt {} cards: {:#?}", some_cards.len(), some_cards);
+    println!(
+        "There are {} cards remaining in the deck: {:#?}",
+        deck.cards.len(),
+        deck
+    );
 
     // another way of expressing that formatted string is to put the binding name in the {}
     // println!("Here's your deck: {deck:#?}");
