@@ -1,3 +1,6 @@
+//this enables a shorthand way to access thread_rng from the rand dependency, and SliceRandom from rand::seq
+//the auto formatter rearranged it so seq::SliceRandom came first before thread_rng
+use rand::{seq::SliceRandom, thread_rng};
 /*
     objective:
 
@@ -10,19 +13,23 @@
     this can be represented in a struct, which in rust is similar to classes in other languages
 */
 
+//This #[derive(Debug)] statement is giving the struct an attribute, something where 'derive'
+//is adding instructions at compile time to this struct, which enables it to have the Debug trait,
+//which allows it to work in a formatted string using a syntax like "Here is your dec: {:?}", deck
 #[derive(Debug)]
 struct Deck {
     //vectors can grow and shrink in size, while arrays have fixed lengths
     cards: Vec<String>,
 }
 
+//this is an inherent implementation block, which seems to be used to give the Deck struct functions
+//it is not yet clear why this isn't just defined inside the struct itself but I'd like to know why that is so
+//update:  it seems it is so that data structure and struct behaviours can be separated for readability & maintainability
 impl Deck {
     //the key word Self in this case is a reference to the type in the parenting inherent implementation block,
     //so Self here will return type Deck
     fn new() -> Self {
-        /*
-            Rather than typing out all the cards one at a time, it can be done as a nested for loop
-        */
+        //Rather than typing out all the cards one at a time, it can be done as a nested for loop
 
         //these are arrays and have a fixed length
         let suits = ["Hearts", "Diamonds", "Clubs", "Spades"];
@@ -65,14 +72,25 @@ impl Deck {
         //it is important that it does NOT have a semicolon on it for it to work as an implicit return
         //Rust will automatically return the last evaluated expression in a function IF IT DOESN'T HAVE A SEMICOLON on it
         Deck { cards }
+    }
 
+    //&self needs to be changed to &mut self because the deck being referenced by &self will change 
+    fn shuffle(&mut self) {
+        let mut rng = thread_rng();
+        
+        //this shuffle method comes from using rand::seq::SliceRandom which modifies vectors to have a shuffle method
+        //the &mut rng is a reference to the rng object which is intended to be mutable
+        self.cards.shuffle(&mut rng);
     }
 }
 
 fn main() {
     //while a struct seemed to need to be assigned as a struct literal, like seen in 'let deck = Deck { cards },
     //an inherent implementation or 'impl Deck {fn new() -> Self{}}' was able to allow making a constructor to use like seen here
-    let deck = Deck::new();
+    //deck needs to be mutable because it will be altered when it is shuffled
+    let mut deck = Deck::new();
+
+    deck.shuffle();
 
     //the :? inside the {} is the Debug formatter
     //which needs #[derive(Debug)] added to the struct Deck to make function without an error
