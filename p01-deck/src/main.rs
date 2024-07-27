@@ -19,7 +19,7 @@ fn main() {
 
     /*
         Rather than typing out all the cards one at a time, it can be done as a nested for loop
-     */
+    */
 
     //these are arrays and have a fixed length
     let suits = ["Hearts","Diamonds","Clubs","Spades"];
@@ -46,8 +46,8 @@ fn main() {
     //but now it is able to print this struct to the console
     println!("Here's your deck: {:?}", deck);
 
-    println!("Here's the cards vector: {:?}", cards)
-    
     // another way of expressing that formatted string is to put the binding name in the {}
     // println!("Here's your deck: {deck}");
+    
+    println!("Here's the cards vector: {:?}", cards)
 }
