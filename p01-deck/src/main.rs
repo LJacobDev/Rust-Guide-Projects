@@ -16,6 +16,27 @@ struct Deck {
 }
 
 fn main() {
+
+    /*
+        Rather than typing out all the cards one at a time, it can be done as a nested for loop
+     */
+
+    //these are arrays and have a fixed length
+    let suits = ["Hearts","Diamonds","Clubs","Spades"];
+    let values = ["Ace","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Jack","Queen","King"];
+
+    //this is a vec![] because it will be given elements dynamically
+    //cards.push() was giving an error about immutability so mut was added here to resolve that
+    let mut cards = vec![];
+
+    for suit in suits {
+        for value in values {
+            let card = format!("{} of {}", value, suit);
+            cards.push(card);
+        }
+    }
+
+
     //in Rust, variables are referred to as 'bindings'
     //another equivalent way to create the empty vector would be Deck { cards: Vec::new() }
     let deck = Deck { cards: vec![] }; 
@@ -24,6 +45,8 @@ fn main() {
     //which needs #[derive(Debug)] added to the struct Deck to make function without an error
     //but now it is able to print this struct to the console
     println!("Here's your deck: {:?}", deck);
+
+    println!("Here's the cards vector: {:?}", cards)
     
     // another way of expressing that formatted string is to put the binding name in the {}
     // println!("Here's your deck: {deck}");
