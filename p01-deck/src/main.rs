@@ -38,16 +38,24 @@ fn main() {
 
 
     //in Rust, variables are referred to as 'bindings'
+    //an empty vector can be created using a macro like vec![]
     //another equivalent way to create the empty vector would be Deck { cards: Vec::new() }
-    let deck = Deck { cards: vec![] }; 
+    // let deck = Deck { cards: vec![] }; 
+
+    //now that the cards vector exists it can be given to this struct literal instead of an empty vector
+    // let deck = Deck { cards: cards }; 
+
+    //but the rust-analyzer gives a hint that the shorthand can be used here because the field and binding have identical names
+    let deck = Deck { cards }; 
+
 
     //the :? inside the {} is the Debug formatter
     //which needs #[derive(Debug)] added to the struct Deck to make function without an error
     //but now it is able to print this struct to the console
-    println!("Here's your deck: {:?}", deck);
+    //adding the # to the formatter making it {:#?} makes it print in a 'pretty' way which is easier for a human to read
+    println!("Here's your deck: {:#?}", deck);
 
     // another way of expressing that formatted string is to put the binding name in the {}
-    // println!("Here's your deck: {deck}");
+    // println!("Here's your deck: {deck:#?}");
     
-    println!("Here's the cards vector: {:?}", cards)
 }
