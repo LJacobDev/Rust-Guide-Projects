@@ -55,8 +55,17 @@ impl Deck {
         // let deck = Deck { cards: cards };
 
         //but the rust-analyzer gives a hint that the shorthand can be used here because the field and binding have identical names
-        let deck = Deck { cards };
-        return deck;
+        // let deck = Deck { cards };
+        // return deck;
+
+        //this line is an equivalent result to the prior return statement above
+        // return Deck { cards };
+
+        //this is an IMPLICIT RETURN statement and is equivalent to the two prior return statements shown above
+        //it is important that it does NOT have a semicolon on it for it to work as an implicit return
+        //Rust will automatically return the last evaluated expression in a function IF IT DOESN'T HAVE A SEMICOLON on it
+        Deck { cards }
+
     }
 }
 
