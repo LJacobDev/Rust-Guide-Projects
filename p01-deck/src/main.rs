@@ -17,7 +17,7 @@ struct Deck {
 
 fn main() {
     //in Rust, variables are referred to as 'bindings'
-    //another equivalent way to create the empty vector would be Deci { cards: Vec::new() }
+    //another equivalent way to create the empty vector would be Deck { cards: Vec::new() }
     let deck = Deck { cards: vec![] }; 
 
     //the :? inside the {} is the Debug formatter
