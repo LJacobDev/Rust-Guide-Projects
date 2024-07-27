@@ -12,42 +12,58 @@
 
 #[derive(Debug)]
 struct Deck {
-    cards: Vec<String>, //vectors can grow and shrink in size, while arrays have fixed lengths
+    //vectors can grow and shrink in size, while arrays have fixed lengths
+    cards: Vec<String>,
+}
+
+impl Deck {
+    //the key word Self in this case is a reference to the type in the parenting inherent implementation block,
+    //so Self here will return type Deck
+    fn new() -> Self {
+        /*
+            Rather than typing out all the cards one at a time, it can be done as a nested for loop
+        */
+
+        //these are arrays and have a fixed length
+        let suits = ["Hearts", "Diamonds", "Clubs", "Spades"];
+        let values = [
+            "Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack",
+            "Queen", "King",
+        ];
+
+        //this is a vec![] because it will be given elements dynamically
+        //cards.push() was giving an error about immutability so mut was added here to resolve that
+        let mut cards = vec![];
+
+        //these for loops work on arrays, but when I tried making suits and values vectors, there was an error given here
+        //The error said: `values` moved due to this implicit call to `.into_iter()`, in previous iteration of looprustcE0382
+        //It didn't seem to mind that suits was a vecotr, only values.
+        //This was resolved anyway by using arrays instead.
+        for suit in suits {
+            for value in values {
+                let card = format!("{} of {}", value, suit);
+                cards.push(card);
+            }
+        }
+
+        //in Rust, variables are referred to as 'bindings'
+        //an empty vector can be created using a macro like vec![]
+        //another equivalent way to create the empty vector would be Deck { cards: Vec::new() }
+        // let deck = Deck { cards: vec![] };
+
+        //now that the cards vector exists it can be given to this struct literal instead of an empty vector
+        // let deck = Deck { cards: cards };
+
+        //but the rust-analyzer gives a hint that the shorthand can be used here because the field and binding have identical names
+        let deck = Deck { cards };
+        return deck;
+    }
 }
 
 fn main() {
-
-    /*
-        Rather than typing out all the cards one at a time, it can be done as a nested for loop
-    */
-
-    //these are arrays and have a fixed length
-    let suits = ["Hearts","Diamonds","Clubs","Spades"];
-    let values = ["Ace","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Jack","Queen","King"];
-
-    //this is a vec![] because it will be given elements dynamically
-    //cards.push() was giving an error about immutability so mut was added here to resolve that
-    let mut cards = vec![];
-
-    for suit in suits {
-        for value in values {
-            let card = format!("{} of {}", value, suit);
-            cards.push(card);
-        }
-    }
-
-
-    //in Rust, variables are referred to as 'bindings'
-    //an empty vector can be created using a macro like vec![]
-    //another equivalent way to create the empty vector would be Deck { cards: Vec::new() }
-    // let deck = Deck { cards: vec![] }; 
-
-    //now that the cards vector exists it can be given to this struct literal instead of an empty vector
-    // let deck = Deck { cards: cards }; 
-
-    //but the rust-analyzer gives a hint that the shorthand can be used here because the field and binding have identical names
-    let deck = Deck { cards }; 
-
+    //while a struct seemed to need to be assigned as a struct literal, like seen in 'let deck = Deck { cards },
+    //an inherent implementation or 'impl Deck {fn new() -> Self{}}' was able to allow making a constructor to use like seen here
+    let deck = Deck::new();
 
     //the :? inside the {} is the Debug formatter
     //which needs #[derive(Debug)] added to the struct Deck to make function without an error
@@ -57,5 +73,4 @@ fn main() {
 
     // another way of expressing that formatted string is to put the binding name in the {}
     // println!("Here's your deck: {deck:#?}");
-    
 }
