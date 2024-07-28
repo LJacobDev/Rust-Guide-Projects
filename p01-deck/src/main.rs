@@ -59,6 +59,7 @@ fn main() {
 
     //enabled error handling for asking for too many cards,
     //but asking for a negative number of cards gives an error
+    //it is left as-is for now because error handling will be addressed in a coming project
     let number_of_cards = 5;
 
     let some_cards = deck.deal(number_of_cards);
