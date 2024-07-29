@@ -109,7 +109,9 @@ impl Bank {
         self.accounts
             .iter()
             .map(|account| account.account_summary())
-            .collect::<Vec<String>>()
+            .collect/*::<Vec<String>>*/()   
+            //::<Vec<String>> is not needed here
+            //because the compiler was able to infer what type to have .collect() convert the iterator to
     }
 }
 
