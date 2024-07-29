@@ -8,21 +8,25 @@ enum Media {
 impl Media {
     fn description(&self) -> String {
         //a verbose way to do type checking to find out what variant of the Media Enum this is
-        if let Media::Book { title, author } = self {
-            format!("Book: {} by {}", title, author)
-        } else if let Media::Movie { title, director } = self {
-            format!("Movie: {} by {}", title, director)
-        } else if let Media::Audiobook { title } = self {
-            format!("Audiobook: {}", title)
-        } else {
-            String::from("Unknown Media Type")
+        // if let Media::Book { title, author } = self {
+        //     format!("Book: {} by {}", title, author)
+        // } else if let Media::Movie { title, director } = self {
+        //     format!("Movie: {} by {}", title, director)
+        // } else if let Media::Audiobook { title } = self {
+        //     format!("Audiobook: {}", title)
+        // } else {
+        //     String::from("Unknown Media Type")
+        // }
+
+        //the less verbose match statement way of doing the type checking for which variant it is:
+        match self {
+            Media::Book { title, author } => format!("Book: {} by {}", title, author),
+            Media::Movie { title, director } => format!("Movie: {} by {}", title, director),
+            Media::Audiobook { title } => format!("Audiobook: {}", title),
         }
     }
 }
 
-// fn print_media(media: Media) {
-//     println!("{:#?}", media);
-// }
 
 fn main() {
     let audiobook = Media::Audiobook {
@@ -36,10 +40,6 @@ fn main() {
         title: String::from("A Book"),
         author: String::from("Booker Authorman"),
     };
-
-    // print_media(audiobook);
-    // print_media(good_movie);
-    // print_media(book);
 
     println!("{}", audiobook.description());
     println!("{}", good_movie.description());
