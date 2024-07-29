@@ -3,6 +3,9 @@ enum Media {
     Book { title: String, author: String },
     Movie { title: String, director: String },
     Audiobook { title: String },
+    // Podcast { episode_number: u32 },
+    Podcast(u32), //this is syntax that works like above, but where 'episode_number' is implied and takes less typing to work with
+    Placeholder,
 }
 
 impl Media {
@@ -35,11 +38,42 @@ impl Media {
 
         //it is also possible to wrap curly braces around the statement after the => arrow, which allows multiline blocks of statements
         match self {
-            Media::Book { title, author } => {format!("Book: {} by {}", title, author)},
-            Media::Movie { title, director } => {format!("Movie: {} by {}", title, director)},
-            Media::Audiobook { title } => {format!("Audiobook: {}", title)},
+            Media::Book { title, author } => {
+                format!("Book: {} by {}", title, author)
+            }
+            Media::Movie { title, director } => {
+                format!("Movie: {} by {}", title, director)
+            }
+            Media::Audiobook { title } => {
+                format!("Audiobook: {}", title)
+            }
+            //above, Podcast(u32) is how the enum variant is defined,
+            //so an arbitrary name like "episode_number" can be made up here
+            //to be able to use the u32 value in this match arm
+            Media::Podcast(episode_number) => {
+                format!("Podcast episode number: {}", episode_number)
+            }
+            //above, Placeholder had no curly braces or fields at all
+            //so it pattern matches in this way here
+            Media::Placeholder => {
+                format!("Placeholder")
+            }
         }
+    }
+}
 
+#[derive(Debug)]
+struct Catalog {
+    items: Vec<Media>,
+}
+
+impl Catalog {
+    fn new() -> Self {
+        Catalog { items: vec![] }
+    }
+
+    fn add_media(&mut self, media: Media) {
+        self.items.push(media);
     }
 }
 
@@ -55,8 +89,27 @@ fn main() {
         title: String::from("A Book"),
         author: String::from("Author Authorman"),
     };
+    //this enum variant is created in a similar syntax to how it was defined in the Enum block
+    let podcast = Media::Podcast(1);
+    //this enum variant is created with no curly braces nor parentheses like how it was defined in the enum block
+    let placeholder = Media::Placeholder;
 
-    println!("{}", audiobook.description());
-    println!("{}", good_movie.description());
-    println!("{}", book.description());
+    let mut catalog = Catalog::new();
+
+    catalog.add_media(audiobook);
+    catalog.add_media(book);
+    catalog.add_media(good_movie);
+    catalog.add_media(podcast);
+    catalog.add_media(placeholder);
+
+    println!("{:#?}", catalog);
+
+    // println!("{}", audiobook.description());
+    // println!("{}", good_movie.description());
+    // println!("{}", book.description());
+
+    println!("Catalog item descriptions:");
+    for media in catalog.items {
+        println!("{}", media.description());
+    }
 }
