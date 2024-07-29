@@ -1,7 +1,7 @@
 #[derive(Debug)]
 struct Account {
     id: u32,
-    balance: i32, //balance will represent $10.23 as 1023 so integer is used
+    balance: isize, //balance will represent $10.23 as 1023 so integer is used
     holder: String,
 }
 
@@ -12,6 +12,34 @@ impl Account {
             holder,
             balance: 0,
         }
+    }
+
+    ///Increase account balance by specified deposit size if deposit >= 0.  Return new account balance.
+    fn credit_funds(&mut self, deposit: isize) -> isize {
+        if deposit >= 0 {
+            println!("Depositing {}", deposit);
+            self.balance += deposit;
+            println!("Deposit complete, new balance: {}", self.balance);
+        }
+        self.balance
+    }
+
+    ///Decrease account balance by specified withdrawal size if withdrawal >= 0 and withdrawal < account balance.  Return new account balance.
+    fn debit_funds(&mut self, withdrawal: isize) -> isize {
+        if withdrawal >= 0 && withdrawal < self.balance {
+            println!("Withdrawing {}", withdrawal);
+            self.balance -= withdrawal;
+            println!("Withdrawal complete, new balance: {}", self.balance);
+        }
+        if withdrawal > self.balance {
+            println!("Insufficient funds");
+        }
+        self.balance
+    }
+
+    ///Returns formatted string of account fields and values.
+    fn account_summary(&self) -> String {
+        format!("{:?}", self)
     }
 }
 
@@ -26,20 +54,24 @@ impl Bank {
     }
 }
 
-fn print_account(account: Account){
-    println!("Account: {account:#?}");
-}
-
 fn main() {
     let bank = Bank::new();
 
     //putting in a string like "" is seen as &str, or a string slice,
     //so to get a true String type you need to use String::from(), or format!()
-    let account = Account::new(1, String::from("TestName"));
+    let mut account = Account::new(1, String::from("TestName"));
+
+    println!("{}", account.account_summary());
+
+    account.credit_funds(10);
+
+    account.debit_funds(5);
+
+    account.debit_funds(15);
+
+    println!("{}", account.account_summary());
 
     println!("Bank {bank:#?}");
-    
-
 
     /*
 
