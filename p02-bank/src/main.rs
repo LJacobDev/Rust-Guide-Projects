@@ -47,7 +47,9 @@ impl Account {
 
     ///Returns formatted string of account fields and values.
     fn account_summary(&self) -> String {
-        format!("{:?}", self)
+        //my version just returned the entire object in a debug formatted string, but the guide used a better way as shown below
+        // format!("{:?}", self)
+        format!("{} has a balance of {}", self.holder, self.balance)
     }
 }
 
@@ -68,6 +70,8 @@ impl Bank {
 
     ///Returns the sum of all the accounts in the Bank
     fn sum_accounts(&self) -> isize {
+        //I initially did this for loop, but the guide demonstrates using an iterator as shown below this
+        /*
         let mut sum = 0;
 
         for account in &self.accounts {
@@ -75,10 +79,19 @@ impl Bank {
         }
 
         sum
+        */
+
+        //this is a new thing showed in the guide which will be explained more in coming projects
+        //I think what it looks like it is doing is using map to return a collection that contains
+        //references to just the account balances and then calls sum on that collection of balance references
+        self.accounts.iter().map(|account| account.balance).sum()
     }
 
     ///Returns a Vector<String> containing the summaries of each Account contained in the Bank.
     fn accounts_summary(&self) -> Vec<String> {
+        //similarly to above, I used a for loop to accomplish this,
+        //but the guide shows that there is an iterator that can do this instead as seen below
+        /*
         let mut summary = vec![];
 
         for account in &self.accounts {
@@ -86,6 +99,17 @@ impl Bank {
         }
 
         summary
+        */
+
+        //this is what the guide showed to do to make it work using iterator style
+        //though the .collect::<Vec<String>>() is a new kind of syntax that I haven't seen elsewhere yet
+        //the map method gives a collection of the account summary strings, and
+        //then those are collected into a Vector of Strings, using a syntax of '.collect::<Vec<String>>()'
+        //the documentation popup boxes explain this, that .collect transforms an iterator into a relevant collection
+        self.accounts
+            .iter()
+            .map(|account| account.account_summary())
+            .collect::<Vec<String>>()
     }
 }
 
@@ -122,6 +146,9 @@ fn main() {
     //But when it appears in the bank.accounts_summary() as a vector of strings, there are double quotes
     //wrapped around each element in the output, and then there are escape characters showing in the inner quotes
     //around the holder name that were not intentionally placed there but were added automatically
+
+    //UPDATE:  when I changed the account_summary format!() line to print out a formatted string of specific values and text,
+    //rather than just the account struct, it caused the issue mentioned above to go away
     println!("Bank details:\n {:#?}", bank.accounts_summary());
 
     /*
