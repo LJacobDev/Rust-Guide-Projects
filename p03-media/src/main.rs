@@ -28,7 +28,8 @@ impl Media {
         //     Media::Audiobook { title } => format!("Audiobook: {}", title),
         // }
 
-        //self is being checked against the type pattern mentioned on the left side of the => arrow,
+        //This is called Pattern Matching
+        //'self' is being checked against the type pattern mentioned on the left side of the => arrow,
         //if self matches the structure of any of the given Enum variants, then the code on the right of the => is executed
         //which in this case, looks to be an implicit return statement of the format!() macro
 
