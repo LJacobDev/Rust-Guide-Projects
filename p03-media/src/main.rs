@@ -1,3 +1,5 @@
+use std::option;
+
 #[derive(Debug)]
 enum Media {
     Book { title: String, author: String },
@@ -114,8 +116,48 @@ fn main() {
         println!("{}", media.description());
     }
 
-    
-    
+    //Example of using Some() and None match checking when using items.get()
+
+    match catalog.items.get(1) {
+        Option::Some(value) => {
+            println!("Item found: {:#?}", value)
+        }
+        Option::None => {
+            println!("No item at that index")
+        }
+    }
+
+    //it is possible to omit the "Option::" part of the enum variant checking
+
+    match catalog.items.get(1) {
+        Some(value) => println!("Value found: {:#?}", value),
+        None => println!("No value found at that index")
+    }
+
+
+    //checking all values with a loop
+
+        //got unexpected results when using for i in [0..5] vs for i in [0,1,2,3,4,5]
+
+    //for i in [0..5] was intended to produce "value found:" 5 times and "No item.." one time,
+    //but instead it said "Value found" once and showed all items
+    for i in [0..5] {
+        match catalog.items.get(i) {
+            Some(value) => println!("Value found: {:#?}", value),
+            None => println!("No item found at that index"),
+        }
+    }
+
+    //writing the for loop in this way did result in either "Value Found" or "No item found.." appearing a total of 6 times
+    for i in [0,1,2,3,4,5] {
+        match catalog.items.get(i) {
+            Some(value) => println!("Value found: {:#?}", value),
+            None => println!("No item found at index of {}", i)
+        }
+    }
+
+    /*
+
     //--------------------experimenting with Vec::get and index slicing
 
     //using catalog.items.get(index) doesn't move the value, and it also wraps the result in 'Some()'
@@ -136,10 +178,13 @@ fn main() {
     //this example of step_by().collect()::<Vec<_>> no longer has the Option Some() or None appear with it as was seen when using Vec::get
 
     println!("Every second item: {:#?}", catalog.items.iter().step_by(2).collect::<Vec<_>>());
+
     //using either <Vec<_>> or <Vec<&Media>> both work, though I don't yet know what the meaning of the former is
+
     //I checked and it means it's a type placeholder that allows the compiler to infer the type based on the context, which it could tell was &Media
     //however, using just .collect() without <Vec<_>> wasn't enough to be able to infer that it was needing <Vec<&Media>> and it needed some help with it
+
     println!("Every second item: {:#?}", catalog.items.iter().step_by(2).collect::<Vec<&Media>>());
 
-
+    */
 }
