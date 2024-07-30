@@ -212,6 +212,23 @@ fn main() {
     println!("Index 4: {:#?}", catalog.get_by_index_custom_option_enum(4)); //returns ThereIsAValue(&'a Media)
     println!("Index 40: {:#?}", catalog.get_by_index_custom_option_enum(40)); //returns NoValueAvailable, doesn't panic
 
+
+    println!("\nGet the actual item with match statement rather than getting the enum:");
+    match catalog.get_by_index_custom_option_enum(1) {
+        MightHaveAValue::ThereIsAValue(value) => println!("Value found: {:#?}", value),
+        MightHaveAValue::NoValueAvailable => println!("No value was available at that index")
+    }
+
+
+    println!("\nGet the actual item using 'if let' pattern matching:");
+    if let MightHaveAValue::ThereIsAValue(value) = catalog.get_by_index_custom_option_enum(1) {
+        println!("Value found: {:#?}", value)
+    }
+    else {
+        println!("No value found")
+    }
+
+
     /*
 
     //--------------------experimenting with checking all values with a loop
