@@ -77,7 +77,66 @@ impl Catalog {
     fn add_media(&mut self, media: Media) {
         self.items.push(media);
     }
+
+    //a method that has no error checking and can cause panic at runtime if given out of bounds index
+    fn get_by_index(&self, index: usize) -> &Media {
+        &self.items[index]
+    }
+
+    //a method that has a custom Enum returned to show how Option::Some() and Option::None work
+    fn get_by_index_custom_option_enum(&self, index: usize) -> MightHaveAValue {
+        if index < self.items.len() {
+            //we have something to return
+            MightHaveAValue::ThereIsAValue(&self.items[index])
+        } else {
+            //there is no item at this index
+            MightHaveAValue::NoValueAvailable
+        }
+    }
 }
+
+///Custom 'Option' Enum as demonstrated by guide
+///This one requires a lifetime annotation added to the syntax, 'a ,
+///but the guide doesn't explain it much yet,
+///as they say it will be covered in a later topic of the course
+#[derive(Debug)]
+enum MightHaveAValue<'a> {
+    ThereIsAValue(&'a Media),
+    NoValueAvailable,
+}
+
+//I made this function first as my own guess at how to make a custom Vec::get, before watching the instructor build the function,
+//to see how close my guess would be to the real thing.  The instructor's version of this is done by adding a method onto the Catalog struct
+///Making a custom version of Vec::get to further understand the reason why Vec::get gives Option::Some(value) and Option::None returns
+fn get_by_index_version1(vector: &Vec<Media>, index: usize) -> &Media {
+    &vector[index]
+}
+
+/*
+
+///A custom made enum to demonstrate what is going on when Option::Some() and Option::None are being returned by methods in Rust
+enum CustomOptionVersion2 {
+
+    //This one is something I'm trying to make by guessing how it would be done before seeing how the guide does it
+    //My guess appeared to look about right, but it ran into a problem where the type specified for Some wasn't able to be Some(_)
+    //and using Some(Media) to make it expect the exact type for the practice experiment revealed other issues about it preferring something with a Copy trait
+    //while using Some(&Media) was causing errors talking about how the lifetime might not be appropriate somehow
+    //so it didn't become fully functional and I want to see what the guide does here
+    //UPDATE:  It seemed to have to do with this enum needing a "lifetime annotation" added to it in order to clear some errors talking about lifetime issues
+    Some(Media),
+    None,
+}
+
+fn get_by_index_version2(vector: &Vec<Media>, index: usize) -> CustomOptionVersion2 {
+    if vector.len() > index {
+        CustomOptionVersion2::Some(vector[index])
+    }
+    else {
+        CustomOptionVersion2::None
+    }
+}
+
+*/
 
 fn main() {
     let audiobook = Media::Audiobook {
@@ -104,11 +163,7 @@ fn main() {
     catalog.add_media(podcast);
     catalog.add_media(placeholder);
 
-    println!("{:#?}", catalog);
-
-    // println!("{}", audiobook.description());
-    // println!("{}", good_movie.description());
-    // println!("{}", book.description());
+    println!("Catalog object: {:#?}\n", catalog);
 
     println!("Catalog item descriptions:");
     //this needs to use an immutable reference to catalog.items otherwise it moves them
@@ -116,8 +171,10 @@ fn main() {
         println!("{}", media.description());
     }
 
+    println!(
+        "\nUsing catalog.items.get() to show match checking the returned Some() and None Options:"
+    );
     //Example of using Some() and None match checking when using items.get()
-
     match catalog.items.get(1) {
         Option::Some(value) => {
             println!("Item found: {:#?}", value)
@@ -128,19 +185,42 @@ fn main() {
     }
 
     //it is possible to omit the "Option::" part of the enum variant checking
-
-    match catalog.items.get(1) {
+    match catalog.items.get(8) {
         Some(value) => println!("Value found: {:#?}", value),
-        None => println!("No value found at that index")
+        None => println!("No value found at that index"),
     }
 
+    //testing the function I made on my own before seeing the instructor's explanations
 
-    //checking all values with a loop
+    //these function calls return the value and print it nicely
+    // println!("Get_By_Index 1: {:#?}", get_by_index_version1(&catalog.items, 1));
+    // println!("Get_By_Index 1: {:#?}", get_by_index_version1(&catalog.items, 1));
 
-        //got unexpected results when using for i in [0..5] vs for i in [0,1,2,3,4,5]
+    //this function call causes a panic at runtime due to the index being out of bounds
+    // println!("Get_By_Index 1: {:#?}", get_by_index_version1(&catalog.items, 100));
+
+    //this demonstrates why having an Option return type can be helpful to avoid a panic at runtime
+
+    //using the instructor's example method calls:
+    // println!("Index 1: {:#?}", catalog.get_by_index(1));     //returns &Media
+    // println!("Index 4: {:#?}", catalog.get_by_index(4));     //returns &Media
+    // println!("Index 40: {:#?}", catalog.get_by_index(40));   //causes a panic due to out of bounds index
+
+    println!("\nUsing custom made 'Vec::get' type method with custom made 'Option' type enums:");
+    //using the intructor's example of a method call that returns a custom made enum called MightHaveAValue:
+    println!("Index 1: {:#?}", catalog.get_by_index_custom_option_enum(1)); //returns ThereIsAValue(&'a Media)
+    println!("Index 4: {:#?}", catalog.get_by_index_custom_option_enum(4)); //returns ThereIsAValue(&'a Media)
+    println!("Index 40: {:#?}", catalog.get_by_index_custom_option_enum(40)); //returns NoValueAvailable, doesn't panic
+
+    /*
+
+    //--------------------experimenting with checking all values with a loop
+
+        //got unexpected results when using 'for i in [0..5]' vs 'for i in [0,1,2,3,4,5]'
 
     //for i in [0..5] was intended to produce "value found:" 5 times and "No item.." one time,
     //but instead it said "Value found" once and showed all items
+    //compiler sees this as Range<usize>
     for i in [0..5] {
         match catalog.items.get(i) {
             Some(value) => println!("Value found: {:#?}", value),
@@ -149,12 +229,15 @@ fn main() {
     }
 
     //writing the for loop in this way did result in either "Value Found" or "No item found.." appearing a total of 6 times
+    //compiler sees this as usize
     for i in [0,1,2,3,4,5] {
         match catalog.items.get(i) {
             Some(value) => println!("Value found: {:#?}", value),
             None => println!("No item found at index of {}", i)
         }
     }
+
+    */
 
     /*
 
@@ -181,8 +264,8 @@ fn main() {
 
     //using either <Vec<_>> or <Vec<&Media>> both work, though I don't yet know what the meaning of the former is
 
-    //I checked and it means it's a type placeholder that allows the compiler to infer the type based on the context, which it could tell was &Media
-    //however, using just .collect() without <Vec<_>> wasn't enough to be able to infer that it was needing <Vec<&Media>> and it needed some help with it
+    //I checked and <_> means it's a type placeholder that allows the compiler to infer the type based on the context, which it could tell was &Media
+    //however, using just .collect() wasn't enough to be able to infer that it was needing <Vec<&Media>> and it needed without <Vec<_>> to help it infer
 
     println!("Every second item: {:#?}", catalog.items.iter().step_by(2).collect::<Vec<&Media>>());
 
