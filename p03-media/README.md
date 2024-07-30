@@ -10,4 +10,4 @@ The lessons of this project go on to demonstrate the concept of Option::Some() a
 
 In order to understand Option::Some() and Option::None more thoroughly, custom methods and enums are made to mimic the behaviour of Vec::get and of Option::Some() and Option::None, showing what they work like behind the scenes.
 
-This project also has many commented out sections of code that were written just to experiment with these and other Rust features to understand it better.
+This project also has many commented out sections of code that were written just to experiment with these and other Rust features to understand them better.
