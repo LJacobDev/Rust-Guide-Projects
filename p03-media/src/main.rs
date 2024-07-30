@@ -109,7 +109,17 @@ fn main() {
     // println!("{}", book.description());
 
     println!("Catalog item descriptions:");
-    for media in catalog.items {
+    //this needs to use an immutable reference to catalog.items otherwise it moves them
+    for media in &catalog.items {
         println!("{}", media.description());
     }
+
+    //using catalog.items.get(index) doesn't move the value, and it also wraps the result in 'Some()'
+    println!("{:#?}", catalog.items.get(1));
+    println!("{:#?}", catalog.items.get(1));
+
+    //using catalog.items.get(100) for an index that is not in the collection, it returns a None value
+    println!("{:#?}", catalog.items.get(100));
+
+
 }
