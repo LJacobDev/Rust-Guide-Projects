@@ -114,7 +114,9 @@ fn main() {
         println!("{}", media.description());
     }
 
-    //experimenting with Vec::get and index slicing
+    
+    
+    //--------------------experimenting with Vec::get and index slicing
 
     //using catalog.items.get(index) doesn't move the value, and it also wraps the result in 'Some()'
     println!("Index 1: {:#?}", catalog.items.get(1));
@@ -129,7 +131,10 @@ fn main() {
     //to get the 3rd item to the last item, use 2..
     println!("Item index 2 to the end: {:#?}", catalog.items.get(2..));
 
-    //there isn't a 'stride' option like in python, but similar functionality would work like this:
+
+    //there isn't a 'stride' option like in python, but similar functionality would work like this, using iter().step_by()
+    //this example of step_by().collect()::<Vec<_>> no longer has the Option Some() or None appear with it as was seen when using Vec::get
+
     println!("Every second item: {:#?}", catalog.items.iter().step_by(2).collect::<Vec<_>>());
     //using either <Vec<_>> or <Vec<&Media>> both work, though I don't yet know what the meaning of the former is
     //I checked and it means it's a type placeholder that allows the compiler to infer the type based on the context, which it could tell was &Media
