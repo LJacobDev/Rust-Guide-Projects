@@ -114,12 +114,27 @@ fn main() {
         println!("{}", media.description());
     }
 
+    //experimenting with Vec::get and index slicing
+
     //using catalog.items.get(index) doesn't move the value, and it also wraps the result in 'Some()'
-    println!("{:#?}", catalog.items.get(1));
-    println!("{:#?}", catalog.items.get(1));
+    println!("Index 1: {:#?}", catalog.items.get(1));
+    println!("Index 1: {:#?}", catalog.items.get(1));
 
     //using catalog.items.get(100) for an index that is not in the collection, it returns a None value
-    println!("{:#?}", catalog.items.get(100));
+    println!("Index 100: {:#?}", catalog.items.get(100));
+
+    //if you want to get all the items rather than one index or a subset, use ..
+    println!("All items: {:#?}", catalog.items.get(..));
+
+    //to get the 3rd item to the last item, use 2..
+    println!("Item index 2 to the end: {:#?}", catalog.items.get(2..));
+
+    //there isn't a 'stride' option like in python, but similar functionality would work like this:
+    println!("Every second item: {:#?}", catalog.items.iter().step_by(2).collect::<Vec<_>>());
+    //using either <Vec<_>> or <Vec<&Media>> both work, though I don't yet know what the meaning of the former is
+    //I checked and it means it's a type placeholder that allows the compiler to infer the type based on the context, which it could tell was &Media
+    //however, using just .collect() without <Vec<_>> wasn't enough to be able to infer that it was needing <Vec<&Media>> and it needed some help with it
+    println!("Every second item: {:#?}", catalog.items.iter().step_by(2).collect::<Vec<&Media>>());
 
 
 }
