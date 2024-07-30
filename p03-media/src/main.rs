@@ -282,7 +282,7 @@ fn main() {
     //using either <Vec<_>> or <Vec<&Media>> both work, though I don't yet know what the meaning of the former is
 
     //I checked and <_> means it's a type placeholder that allows the compiler to infer the type based on the context, which it could tell was &Media
-    //however, using just .collect() wasn't enough to be able to infer that it was needing <Vec<&Media>> and it needed without <Vec<_>> to help it infer
+    //however, using just .collect() wasn't enough to be able to infer that it was needing <Vec<&Media>>, and it needed <Vec<_>> to help it infer
 
     println!("Every second item: {:#?}", catalog.items.iter().step_by(2).collect::<Vec<&Media>>());
 
