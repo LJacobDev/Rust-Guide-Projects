@@ -263,6 +263,57 @@ fn main() {
         println!("No value found")
     }
 
+
+
+
+    // ADDITIONAL WAYS TO CHECK OPTION TYPES:  .unwrap(), .expect(""), .unwrap_or(&placeholder)
+
+
+    //using .unwrap()
+    //this gets the value if it is a Some(), and panics if it is a None
+
+    
+    let mut item = catalog.get_by_index_custom_option_enum(1);
+    
+    //this prints the item
+    println!("Item at index 1 unwrapped: {:#?}", item.unwrap());
+    
+    item = catalog.get_by_index_custom_option_enum(10);
+    
+    //this panics
+    // println!("Item at index 10 unwrapped: {:#?}", item.unwrap());
+
+
+
+    //using .expect()
+    //this gets the value if there is Some, and if None, it prints a message and panics
+
+    item = catalog.get_by_index_custom_option_enum(1);
+
+    //this prints the item
+    println!("Item at 1 using .expect(): {:#?}", item.expect(".expect() error message: There was no value at the index selected"));
+
+    item = catalog.get_by_index_custom_option_enum(10);
+
+    //this prints a message and then panics
+    // println!("Item at 1 using .expect(): {:#?}", item.expect(".expect() error message: There was no value at the index selected"));
+
+
+    //using .unwrap_or()
+    //this gets the value in the Some() if there is one, or else gives another value if there is a None, and does not panic
+
+    item = catalog.get_by_index_custom_option_enum(1);
+
+    //this gives the value in the Some()
+    //this needed to be given a default value that was of type &Media, so I used a reference to a newly created placeholder variant 
+    println!("Index 1 using the .unwrap_or() method: {:#?}", item.unwrap_or(&Media::Placeholder));
+    item = catalog.get_by_index_custom_option_enum(10);
+
+    //this has a None Option type so it gives 'Placeholder' in the output AND DOES NOT PANIC / CRASH THE PROGRAM
+    //this needed to be given a default value that was of type &Media, so I used a reference to a newly created placeholder variant 
+    println!("Index 10 using the .unwrap_or() method: {:#?}", item.unwrap_or(&Media::Placeholder));
+
+
     /*
 
     //--------------------experimenting with checking all values with a loop
