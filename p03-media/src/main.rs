@@ -83,27 +83,44 @@ impl Catalog {
         &self.items[index]
     }
 
+    //OLD WAY THAT RETURNED 'MIGHTHAVEAVALUE' AS EXAMPLE OF HOW OPTION WORKS
     //a method that has a custom Enum returned to show how Option::Some() and Option::None work
-    fn get_by_index_custom_option_enum(&self, index: usize) -> MightHaveAValue {
+    // fn get_by_index_custom_option_enum(&self, index: usize) -> MightHaveAValue {
+    //     if index < self.items.len() {
+    //         //we have something to return
+    //         MightHaveAValue::ThereIsAValue(&self.items[index])
+    //     } else {
+    //         //there is no item at this index
+    //         MightHaveAValue::NoValueAvailable
+    //     }
+    // }
+
+    //a method that has a custom Enum returned to show how Option::Some() and Option::None work
+    fn get_by_index_custom_option_enum(&self, index: usize) -> Option<&Media> {
         if index < self.items.len() {
             //we have something to return
-            MightHaveAValue::ThereIsAValue(&self.items[index])
+            Some(&self.items[index])
         } else {
             //there is no item at this index
-            MightHaveAValue::NoValueAvailable
+            None
         }
     }
+
+
 }
 
 ///Custom 'Option' Enum as demonstrated by guide
 ///This one requires a lifetime annotation added to the syntax, 'a ,
 ///but the guide doesn't explain it much yet,
 ///as they say it will be covered in a later topic of the course
-#[derive(Debug)]
-enum MightHaveAValue<'a> {
-    ThereIsAValue(&'a Media),
-    NoValueAvailable,
-}
+
+//commenting this enum out and modifying 'get_by_index_custom_option_enum to no longer return 'mighthaveavalue' but return 'Option' instead
+
+// #[derive(Debug)]
+// enum MightHaveAValue<'a> {
+//     ThereIsAValue(&'a Media),
+//     NoValueAvailable,
+// }
 
 //I made this function first as my own guess at how to make a custom Vec::get, before watching the instructor build the function,
 //to see how close my guess would be to the real thing.  The instructor's version of this is done by adding a method onto the Catalog struct
@@ -213,21 +230,38 @@ fn main() {
     println!("Index 40: {:#?}", catalog.get_by_index_custom_option_enum(40)); //returns NoValueAvailable, doesn't panic
 
 
+    // old block of code that demonstrated the custom enum of MightHaveAValue before replacing it to use Option again
+    // println!("\nGet the actual item with match statement rather than getting the enum:");
+    // match catalog.get_by_index_custom_option_enum(1) {
+    //     MightHaveAValue::ThereIsAValue(value) => println!("Value found: {:#?}", value),
+    //     MightHaveAValue::NoValueAvailable => println!("No value was available at that index")
+    // }
+
+
+    // println!("\nGet the actual item using 'if let' pattern matching:");
+    // if let MightHaveAValue::ThereIsAValue(value) = catalog.get_by_index_custom_option_enum(1) {
+    //     println!("Value found: {:#?}", value)
+    // }
+    // else {
+    //     println!("No value found")
+    // }
+    
+
+    //new versions of the above block of code that use the Option type for its matching
     println!("\nGet the actual item with match statement rather than getting the enum:");
     match catalog.get_by_index_custom_option_enum(1) {
-        MightHaveAValue::ThereIsAValue(value) => println!("Value found: {:#?}", value),
-        MightHaveAValue::NoValueAvailable => println!("No value was available at that index")
+        Some(value) => println!("Value found: {:#?}", value),
+        None => println!("No value was available at that index")
     }
 
 
     println!("\nGet the actual item using 'if let' pattern matching:");
-    if let MightHaveAValue::ThereIsAValue(value) = catalog.get_by_index_custom_option_enum(1) {
+    if let Some(value) = catalog.get_by_index_custom_option_enum(1) {
         println!("Value found: {:#?}", value)
     }
     else {
         println!("No value found")
     }
-
 
     /*
 
