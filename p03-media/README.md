@@ -1,6 +1,8 @@
 # p03-media
 
-This project is designed to represent a simple catalog that can hold Books, Movies, and Audiobooks.  However, the project is less about making a useful catalog and more about demonstrating several important concepts in Rust regarding Enums, Options, and Pattern Matching.
+This project was not made to be readable or cleanly written, but rather to build up an understanding of how Enums and the Option type works in Rust, so the code has lots of incremental steps that were performed and then commented out without deleting them so that the steps in the thinking process could be better remembered.
+
+It represents a simple catalog that can hold Books, Movies, and Audiobooks.  However, the project is less about making a useful catalog and more about demonstrating several important concepts in Rust regarding Enums, Options, and Pattern Matching.
 
 All three Media items have a title, but the other fields such as 'author' or 'director' vary across each type.  This project is meant to demonstrate how Rust's Enums make it possible to group together items that have some similarities yet some differences in a way that can lead to less repeated code than if each were represented as a separate struct.
 
