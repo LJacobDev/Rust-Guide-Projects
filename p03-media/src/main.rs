@@ -1,113 +1,9 @@
+mod content;
+
 use std::option;
+use content::media::Media;
+use content::catalog::Catalog;
 
-#[derive(Debug)]
-enum Media {
-    Book { title: String, author: String },
-    Movie { title: String, director: String },
-    Audiobook { title: String },
-    // Podcast { episode_number: u32 },
-    Podcast(u32), //this is syntax that works like above, but where 'episode_number' is implied and takes less typing to work with
-    Placeholder,
-}
-
-impl Media {
-    fn description(&self) -> String {
-        //Rust will not allow you to process the properties of self, like self.title, until the type has been first determined,
-        //even though all three variants have a .title property
-
-        //a verbose way to do type checking to find out what variant of the Media Enum this is
-        // if let Media::Book { title, author } = self {
-        //     format!("Book: {} by {}", title, author)
-        // } else if let Media::Movie { title, director } = self {
-        //     format!("Movie: {} by {}", title, director)
-        // } else if let Media::Audiobook { title } = self {
-        //     format!("Audiobook: {}", title)
-        // } else {
-        //     String::from("Unknown Media Type")
-        // }
-
-        //the less verbose match statement way of doing the type checking for which variant it is:
-        // match self {
-        //     Media::Book { title, author } => format!("Book: {} by {}", title, author),
-        //     Media::Movie { title, director } => format!("Movie: {} by {}", title, director),
-        //     Media::Audiobook { title } => format!("Audiobook: {}", title),
-        // }
-
-        //This is called Pattern Matching
-        //'self' is being checked against the type pattern mentioned on the left side of the => arrow,
-        //if self matches the structure of any of the given Enum variants, then the code on the right of the => is executed
-        //which in this case, looks to be an implicit return statement of the format!() macro
-
-        //it is also possible to wrap curly braces around the statement after the => arrow, which allows multiline blocks of statements
-        match self {
-            Media::Book { title, author } => {
-                format!("Book: {} by {}", title, author)
-            }
-            Media::Movie { title, director } => {
-                format!("Movie: {} by {}", title, director)
-            }
-            Media::Audiobook { title } => {
-                format!("Audiobook: {}", title)
-            }
-            //above, Podcast(u32) is how the enum variant is defined,
-            //so an arbitrary name like "episode_number" can be made up here
-            //to be able to use the u32 value in this match arm
-            Media::Podcast(episode_number) => {
-                format!("Podcast episode number: {}", episode_number)
-            }
-            //above, Placeholder had no curly braces or fields at all
-            //so it pattern matches in this way here
-            Media::Placeholder => {
-                format!("Placeholder")
-            }
-        }
-    }
-}
-
-#[derive(Debug)]
-struct Catalog {
-    items: Vec<Media>,
-}
-
-impl Catalog {
-    fn new() -> Self {
-        Catalog { items: vec![] }
-    }
-
-    fn add_media(&mut self, media: Media) {
-        self.items.push(media);
-    }
-
-    //a method that has no error checking and can cause panic at runtime if given out of bounds index
-    fn get_by_index(&self, index: usize) -> &Media {
-        &self.items[index]
-    }
-
-    //OLD WAY THAT RETURNED 'MIGHTHAVEAVALUE' AS EXAMPLE OF HOW OPTION WORKS
-    //a method that has a custom Enum returned to show how Option::Some() and Option::None work
-    // fn get_by_index_custom_option_enum(&self, index: usize) -> MightHaveAValue {
-    //     if index < self.items.len() {
-    //         //we have something to return
-    //         MightHaveAValue::ThereIsAValue(&self.items[index])
-    //     } else {
-    //         //there is no item at this index
-    //         MightHaveAValue::NoValueAvailable
-    //     }
-    // }
-
-    //a method that has a custom Enum returned to show how Option::Some() and Option::None work
-    fn get_by_index_custom_option_enum(&self, index: usize) -> Option<&Media> {
-        if index < self.items.len() {
-            //we have something to return
-            Some(&self.items[index])
-        } else {
-            //there is no item at this index
-            None
-        }
-    }
-
-
-}
 
 ///Custom 'Option' Enum as demonstrated by guide
 ///This one requires a lifetime annotation added to the syntax, 'a ,
@@ -266,7 +162,9 @@ fn main() {
 
 
 
-    // ADDITIONAL WAYS TO CHECK OPTION TYPES:  .unwrap(), .expect(""), .unwrap_or(&placeholder)
+    // ADDITIONAL WAYS TO CHECK OPTION TYPES: 
+    
+    //      .unwrap(), .expect(""), .unwrap_or(&placeholder)
 
 
     //using .unwrap()
