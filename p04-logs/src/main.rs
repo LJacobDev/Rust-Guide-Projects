@@ -16,7 +16,17 @@ fn main() {
 
 
     
-    println!("{:#?}", divide(10.0, 0.0));
+    // println!("{:#?}", divide(10.0, 0.0));
+
+    match divide (3.5, 10.0) {
+        Ok(value) => println!("{:#?}", value),
+        Err(what_went_wrong) => println!("{:#?}", what_went_wrong)
+    }
+
+    match divide (3.5, 0.0) {
+        Ok(value) => println!("{:#?}", value),
+        Err(what_went_wrong) => println!("{:#?}", what_went_wrong)
+    }
 }
 
 
@@ -30,3 +40,5 @@ fn divide(a: f64, b: f64) -> Result<f64, Error> {
     }
 
 }
+
+
