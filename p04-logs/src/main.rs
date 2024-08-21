@@ -30,6 +30,8 @@ fn main() {
             error_logs = extract_error_logs(text_result);
 
             match fs::write("error_logs.txt", error_logs.join("\n")) {
+                // Ok(..) and Ok(_) are almost interchangeable here, but the Ok(_) is said to more intentionally communicate that the empty tuple value being received here is being ignored
+                // Ok(_) => println!("Wrote error_logs.txt"),
                 Ok(..) => println!("Wrote error_logs.txt"),
                 Err(error) => println!("{:#?}", error),
             }
