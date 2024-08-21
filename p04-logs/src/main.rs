@@ -2,12 +2,13 @@ use std::fs;
 use std::io::Error;
 
 fn main() {
-    //this returns an OK variant of the Result enum
+    //this returns an OK variant of the Result enum that contains a string of the text contained in logs.txt
     let text = fs::read_to_string("logs.txt");
     println!("{:#?}", text);
 
-    //This returns an Err variants of the Result enum and it contains more information like an error code number,
-    //an error 'kind' like 'NotFound', and an error message like "the system cannot find the file specified"
+    //This returns an Err variants of the Result enum and it contains an Os struct with more information
+    //such as an error code number, an error 'kind' like 'NotFound', and an error message like "the system
+    //cannot find the file specified"
     let text_not_there = fs::read_to_string("logsNotExisting.txt");
     println!("{:#?}", text_not_there);
 
@@ -16,27 +17,33 @@ fn main() {
 
     //getting the logs.txt file and using a match statement to get the OK value into a string
 
-    let logs_text = fs::read_to_string("logs.txt");
-
-    let mut error_logs = vec![];
-
+    // let logs_text = fs::read_to_string("logs.txt");
     // match logs_text {
     //     Ok(text) => println!("{}", text),
     //     Err(error_info) => println!("{}", error_info),
     // }
 
-    match logs_text {
-        Ok(text_result) => {
-            error_logs = extract_error_logs(text_result)
-        }
+    let mut error_logs = vec![];
+
+    match fs::read_to_string("logs.txt") {
+        Ok(text_result) => error_logs = extract_error_logs(text_result),
         Err(what_went_wrong) => {
             println!("{:#?}", what_went_wrong)
         }
     }
 
-
     println!("{:#?}", error_logs);
 
+    //write error logs to an error log file
+    //this one successfully writes the error_logs.txt file
+    if let Err(e) = fs::write("error_logs.txt", error_logs.join("\n")) {
+        println!("Error writing file: {:#?}", e)
+    }
+
+    //this one intentionally picks a non-existing directory so that the Err will fire to see its output
+    if let Err(e) = fs::write("./nodirectory/error_logs.txt", error_logs.join("\n")) {
+        println!("Error writing file: {:#?}", e)
+    }
 
     /*
 
@@ -71,10 +78,9 @@ fn main() {
     */
 }
 
-
-///Takes a string of logs text, breaks it by newline separator, extracts any that starts with "ERROR", and returns a Vector of Strings of lines that meet that criterion
+/// Takes a string of logs text, breaks it by newline separator, extracts any that starts with "ERROR",
+/// returns a Vector of Strings of lines that meet that criterion
 fn extract_error_logs(text_to_parse: String) -> Vec<String> {
-
     let lines = text_to_parse.split("\n");
 
     let mut error_lines = vec![];
@@ -86,5 +92,4 @@ fn extract_error_logs(text_to_parse: String) -> Vec<String> {
     }
 
     error_lines
-
 }
