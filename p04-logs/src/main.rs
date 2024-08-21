@@ -26,16 +26,28 @@ fn main() {
     let mut error_logs = vec![];
 
     match fs::read_to_string("logs.txt") {
-        Ok(text_result) => error_logs = extract_error_logs(text_result),
+        Ok(text_result) => {
+            error_logs = extract_error_logs(text_result);
+
+            match fs::write("error_logs.txt", error_logs.join("\n")) {
+                Ok(..) => println!("Wrote error_logs.txt"),
+                Err(error) => println!("{:#?}", error),
+            }
+        }
         Err(what_went_wrong) => {
             println!("{:#?}", what_went_wrong)
         }
     }
 
+    /*
+
+    //another way of doing file write with an error handling test on it using the if let construct
+
     println!("{:#?}", error_logs);
 
     //write error logs to an error log file
     //this one successfully writes the error_logs.txt file
+    //but this doesn't give off any indication that it succeeded because it only checks for the Err outcome
     if let Err(e) = fs::write("error_logs.txt", error_logs.join("\n")) {
         println!("Error writing file: {:#?}", e)
     }
@@ -44,6 +56,8 @@ fn main() {
     if let Err(e) = fs::write("./nodirectory/error_logs.txt", error_logs.join("\n")) {
         println!("Error writing file: {:#?}", e)
     }
+
+    */
 
     /*
 
