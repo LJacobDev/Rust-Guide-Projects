@@ -1,7 +1,7 @@
 use std::fs;
 use std::io::Error;
 
-fn main() {
+fn main() -> Result<(), Error> {
     //this returns an OK variant of the Result enum that contains a string of the text contained in logs.txt
     let text = fs::read_to_string("logs.txt");
     println!("{:#?}", text);
@@ -23,11 +23,17 @@ fn main() {
     //     Err(error_info) => println!("{}", error_info),
     // }
 
+
+
+    /*
+
+    // a long way to write it out using nested match statements
+
     let mut error_logs = vec![];
 
     match fs::read_to_string("logs.txt") {
         Ok(text_result) => {
-            error_logs = extract_error_logs(text_result);
+            error_logs = extract_error_logs(text_result.as_str());
 
             match fs::write("error_logs.txt", error_logs.join("\n")) {
                 // Ok(..) and Ok(_) are almost interchangeable here, but the Ok(_) is said to more intentionally communicate that the empty tuple value being received here is being ignored
@@ -40,6 +46,45 @@ fn main() {
             println!("{:#?}", what_went_wrong)
         }
     }
+
+    */
+
+
+    // a quicker way to retrieve the values in the Result::Ok() enum using .expect()
+    // but this doesn't have as robust of error handling and will be more prone to panics
+
+    //this however now lacks a way to println! that the file was read or written successfully
+
+    let text = fs::read_to_string("logs.txt")
+        .expect("Could not read file, program crashing");
+
+    let error_logs = extract_error_logs(text.as_str());
+
+    fs::write("error_logs.txt", error_logs.join("\n"))
+        .expect("Failed to write error_logs.txt, program crashing");
+
+
+
+
+    //doing this same thing but with a Try operator instead
+
+
+    //using the Try operator here will either assign a string to text_try if it succeeds,
+    //or if it fails, it will provide an Error type, but in order for this to work, the calling
+    //function of main() also needs to return a Result of Ok or Error, and the error will be printed to console 
+    let text_try = fs::read_to_string("logs.txt")?;
+
+    let error_logs_try = extract_error_logs(text_try.as_str());
+
+    //adding a Try operator here will enable a brief way to get the value unwrapped in case of Ok,
+    //and if Err, it will propagate an error message up to main() which will print the error to console
+    //but for this to work, main() needs to have -> Result<(), Error>
+    //putting an invalid path here results in an error being printed, but the program also panics and ends
+    fs::write("error_logs_try.txt", error_logs_try.join("\n"))?;
+
+    // FOR THESE TRY OPERATORS TO WORK, IT ALSO NEEDS A FINAL Ok(()) AT THE BOTTOM OF main() 
+
+
 
     /*
 
@@ -92,11 +137,15 @@ fn main() {
     }
 
     */
+
+    //this needs to be here as the final return value of main() in order to allow using the Try operator above here
+    Ok(())
+
 }
 
 /// Takes a string of logs text, breaks it by newline separator, extracts any that starts with "ERROR",
 /// returns a Vector of Strings of lines that meet that criterion
-fn extract_error_logs(text_to_parse: String) -> Vec<String> {
+fn extract_error_logs(text_to_parse: &str) -> Vec<String> {
     let lines = text_to_parse.split("\n");
 
     let mut error_lines = vec![];
