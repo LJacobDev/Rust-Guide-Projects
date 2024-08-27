@@ -1,5 +1,5 @@
 fn main() {
-    let colors = vec![
+    let mut colors = vec![
         String::from("red"),
         String::from("green"),
         String::from("blue"),
@@ -27,6 +27,33 @@ fn main() {
     //print only "green" and "blue" by passing in a Vector Slice, but the function needs to know it will be receiving a Vector Slice in its function signature
     print_elements_vector_slice(&colors[1..]); //this version takes from index 1 to the end
     print_elements_vector_slice(&colors[1..3]); //this version takes from index 1 up to but not including 3 (there is no index 3, this is just a way to indicate to take 1 and 2)
+
+
+    //print only the first letter of each string in the vector
+    shorten_strings_first_try(&colors);
+
+    println!("colors Vector before running shorten_strings: {:?}", colors);
+    
+    //print vector after modifying it in place to only have the first letter of each string
+    //it has been updated to use a vector slice, so that it will now turn it into "red", "g", "b" 
+    shorten_strings(&mut colors[1..3]);
+
+    println!("colors Vector after running shorten_strings: {:?}", colors);
+
+    //convert vector of strings to uppercase, returns a new vector and doesn't modify original one
+    println!("{:#?}", to_uppercase_first_try(&colors));
+    
+    //returns a new vector of strings where they're uppercase, doesn't modify original vector, uses .collect() 
+    println!("{:#?}", to_uppercase(&colors));
+
+
+    let new_vector = move_elements_first_try(colors);
+    println!("new_vector: {:?}", new_vector);
+
+    // this println! of 'colors' has an error saying it's a moved value so it seems to have worked
+    // println!("original colors vector: {:?}", colors);
+
+
 }
 
 ///Example to demonstrate for..in loop which uses an Iterator behind the scenes
@@ -68,4 +95,49 @@ fn print_elements_adaptor(data: &Vec<String>) {
 fn print_elements_vector_slice(data: &[String]) {
     println!("Running print_elements_vector_slice");
     data.iter().for_each(|el| println!("{}", el))
+}
+
+
+///I went ahead to try to make the 'shorten_strings' function myself before seeing how the instructor implements it,
+///but I think that this isn't what they had in mind, because this lesson was about showing ownership and borrowing,
+///so I expect that their shorten_strings will probably try to change the data given to it or something else besides what this does
+fn shorten_strings_first_try(data: &Vec<String>) {
+    println!("Running shorten_strings_first_try:");
+    data.iter().for_each(|el| println!("{:?}", el.chars().nth(0)))
+}
+
+
+///Shorten the strings to just their first letter but don't return a new vector, modify the existing one passed to the function
+///This one needs to use data.iter_mut() instead of data.iter() because it needs to be able to change the data and .iter() is read only
+fn shorten_strings(data: &mut [String]) {
+    println!("Running shorten_strings:");
+    data.iter_mut().for_each(|el| el.truncate(1));
+}
+
+///Returns a new vector where the strings are converted to uppercase
+///This was my first guess at how to perform the procedure, however the instructor wanted to teach the .collect() method so
+///his implementation will use that instead of what is done here
+fn to_uppercase_first_try(data: &[String]) -> Vec<String>{
+    println!("Running to_uppercase_first_try:");
+    let mut output = vec![];
+    data.iter().for_each(|el| output.push(el.to_ascii_uppercase()));
+    output
+}
+
+///This version uses .collect(), which allows returning a Vec<String> without having to add extra lines of
+///initializing an empty vector and pushing on to it
+fn to_uppercase(data: &[String]) -> Vec<String> {
+    println!("Running to_uppercase:");
+    data.iter()
+        .map(|el| el.to_uppercase())
+        .collect()
+}
+
+
+///Trying to use the into_iter version to move ownership of a vector into a new vector, before seeing the instructor's way of doing it
+///My version appears to work as it is, but I want to see whether the instructor's version differs from this somehow
+///Yes, the instructor's version differs from this, however this version here still does move the ownership as intended
+fn move_elements_first_try(data: Vec<String>) -> Vec<String> {
+    println!("Running move_elements:");
+    data.into_iter().collect()
 }
