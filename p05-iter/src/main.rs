@@ -53,6 +53,17 @@ fn main() {
     // this println! of 'colors' has an error saying it's a moved value so it seems to have worked
     // println!("original colors vector: {:?}", colors);
 
+    //try to move new_vector contents back to colors
+    // move_elements(new_vector, colors);
+    // println!("{:?}", colors);
+
+    //it doesn't seem to allow that ince it was already move out of, so trying colors_new
+    
+    let mut colors_new = vec![];
+    move_elements(new_vector, &mut colors_new);
+
+    println!("colors_new: {:?}", colors_new);
+
 
 }
 
@@ -138,6 +149,14 @@ fn to_uppercase(data: &[String]) -> Vec<String> {
 ///My version appears to work as it is, but I want to see whether the instructor's version differs from this somehow
 ///Yes, the instructor's version differs from this, however this version here still does move the ownership as intended
 fn move_elements_first_try(data: Vec<String>) -> Vec<String> {
-    println!("Running move_elements:");
+    println!("Running move_elements_first_try:");
     data.into_iter().collect()
+}
+
+
+///The instructor's version is to be handed two vectors that are initialized in the higher scope and this will move ownership of the
+/// contents of the first one into the second one
+fn move_elements(vector_from: Vec<String>, vector_to: &mut Vec<String>) {
+    println!("Running move_elements:");
+    vector_from.into_iter().for_each(|el| vector_to.push(el))
 }
