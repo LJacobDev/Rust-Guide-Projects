@@ -65,6 +65,16 @@ fn main() {
     println!("colors_new: {:?}", colors_new);
 
 
+    let colors_exploded = explode_first_try(&colors_new);
+    println!("{:?}", colors_exploded);
+
+
+    println!("{:?}", explode(&colors_new));
+
+
+    println!("{:?}", find_color_or(&colors_new, "re", "notfound"));
+    println!("{:?}", find_color_or(&colors_new, "bo", "notfound"));
+
 }
 
 ///Example to demonstrate for..in loop which uses an Iterator behind the scenes
@@ -159,4 +169,48 @@ fn move_elements_first_try(data: Vec<String>) -> Vec<String> {
 fn move_elements(vector_from: Vec<String>, vector_to: &mut Vec<String>) {
     println!("Running move_elements:");
     vector_from.into_iter().for_each(|el| vector_to.push(el))
+}
+
+
+/// my imagined version for explode(), turning a Vec<String> into Vec<Vec<String>> but it will likely differ from the instructor's version
+/// because he is introducing 'inner maps' here
+fn explode_first_try(vec_original: &[String]) -> Vec<Vec<String>> {
+    println!("Running explode_first_try:");
+    let mut vec_new: Vec<Vec<String>> = vec![];
+    vec_original.iter().for_each(|el| {
+        let mut vec_build = vec![];
+        el.chars().for_each(|letter| vec_build.push(letter.to_string()));
+        vec_new.push(vec_build);
+    });
+
+    vec_new
+}
+
+///Making it in the way that the instructor showed:
+/// This is taking a reference to a vector of strings,
+/// it iterates it,
+/// runs it through map, where for each string, it calls string.chars(),
+/// which is itself a string iterator that gives each letter
+/// then each letter is run through a new inner map method call to convert it to a string
+/// then those are all collected and it makes it into a vector of strings
+/// then the outer map is collected into a vector of vectors of strings and is returned
+fn explode(data: &[String]) -> Vec<Vec<String>> {
+    println!("Running explode:");
+    data.iter()
+        .map(|el| el.chars().map(|char| char.to_string()).collect()
+        ).collect()
+}
+
+
+///Doing this from memory after seeing the instructor do it a few days ago:
+/// takes in a vector, a string slice to search for and return element that contains it, a string slice of what to return as a fallback if first string isn't found
+/// returns a string of the element found or the fallback if not found
+fn find_color_or(data: &[String], findstr: &str, fallbackstr: &str) -> String {
+    println!("Running find_color_or: ");
+    data.iter()
+    //.find() returns the first element for which the closure function returns true and it is wrapped in an Option enum
+    .find(|el| el.contains(findstr))
+    //.map_or() unwraps the Option enum and returns the fallback (first argument) if it is a None, and returns the second argument if it is a Some, where the value can be obtained from the some like |value| value like how a closure function works
+    //documentation of map_or says: Returns the provided default result (if none), or applies a function to the contained value (if any).
+    .map_or(String::from(fallbackstr), |val| String::from(val))
 }
