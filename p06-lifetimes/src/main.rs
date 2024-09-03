@@ -76,6 +76,8 @@ fn last_language(languages: &[String]) -> &str {
 
 
 ///This one generates an issue where it says it wants to know whether the returned reference is borrowed from input parameter 1 or input parameter 2
+///So to fix that, lifetime annotations are added to all the parameters to show that they could relate to any of them
+///Again, the point of these seems to be about making it easy to tell by looking at the function signature how the return value could relate to the input arguments, so that people using the function know what bindings have to be kept in scope to use the function successfully
 fn longest_language_name<'a>(name1: &'a str, name2: &'a str) -> &'a str {
     if name1.len() >= name2.len() { name1 } else { name2 }
 }
