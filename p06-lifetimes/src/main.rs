@@ -9,6 +9,13 @@ fn main() {
     let result = next_language(&languages, "go");
 
     println!("{:?}", result);
+
+    let last_language = last_language(&languages);
+
+    println!("{:?}", last_language);
+
+
+    println!("longest language name: {}", longest_language_name("typescript", "go"));
 }
 
 ///Takes a vector of languages, and a string slice to look for in the vector
@@ -58,4 +65,17 @@ fn next_language<'a>(languages: &'a [String], current: &str) -> &'a str {
     //assume that the vector will always have a Some() value,
     //since this is just being done as an example of lifetimes, so use .unwrap() here
     return languages.last().unwrap();
+}
+
+
+
+///An example of a corner case where lifetime annotations are not necessary because Rust will assume that the returned reference will be related to the referenced input data
+fn last_language(languages: &[String]) -> &str {
+    languages.last().unwrap()
+}
+
+
+///This one generates an issue where it says it wants to know whether the returned reference is borrowed from input parameter 1 or input parameter 2
+fn longest_language_name<'a>(name1: &'a str, name2: &'a str) -> &'a str {
+    if name1.len() >= name2.len() { name1 } else { name2 }
 }
