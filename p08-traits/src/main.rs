@@ -1,6 +1,8 @@
+
+//both mod basket and use basket::Basket are needed, it isn't enough to have just 'mod basket'
+mod basket;
 use basket::Basket;
 
-mod basket;
 
 fn main() {
 
