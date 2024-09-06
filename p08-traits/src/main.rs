@@ -39,8 +39,16 @@ fn main() {
 
 let mut basket = Basket { item: None};
 
+println!("{}", basket.is_empty());
+
 basket.put(String::from("Stored value"));
 
+println!("{}", basket.is_empty());
+
 println!("{:?}", basket.get());
+
+//after running the basket.get() it is taking the value out of self.item and replacing it with a None,
+//so calling .get() doesn't just read the value, it retrieves it and takes it out of it
+println!("{}", basket.is_empty());
 
 }

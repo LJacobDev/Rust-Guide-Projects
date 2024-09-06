@@ -20,5 +20,12 @@ impl Basket {
         //when numbers are included, additional functionality will be added to be able to add the numbers together
         self.item = Some(item);
     }
+
+    pub fn is_empty(&self) -> bool {
+        match &self.item {
+            Some(value) => true,
+            None => false
+        }
+    }
 }
 
