@@ -4,6 +4,11 @@ pub struct Basket {
 }
 
 impl Basket {
+
+    pub fn new(item: String) -> Self {
+        Basket { item: Some(item)}
+    }
+
     pub fn get(&mut self) -> Option<String> {
 
         //this .take() is capable of moving the value out of self.item, and leaving a None in its place,
@@ -22,10 +27,15 @@ impl Basket {
     }
 
     pub fn is_empty(&self) -> bool {
-        match &self.item {
-            Some(value) => true,
-            None => false
-        }
+        
+        // match &self.item {
+        //     Some(value) => false,
+        //     None => true
+        // }
+
+        //whereas the match statement above does work, there is a built in method of Option.is_none() that does this
+        self.item.is_none()
+
     }
 }
 

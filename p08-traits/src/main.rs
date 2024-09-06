@@ -37,7 +37,7 @@ fn main() {
 
 */
 
-let mut basket = Basket { item: None};
+let mut basket = Basket::new("starting value".to_string());
 
 println!("{}", basket.is_empty());
 
