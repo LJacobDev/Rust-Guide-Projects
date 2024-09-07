@@ -3,6 +3,11 @@
 mod basket;
 use basket::Basket;
 
+mod container;
+use container::Container;
+
+mod stack;
+use stack::Stack;
 
 fn main() {
 
@@ -52,5 +57,28 @@ println!("{:?}", basket.get());
 //after running the basket.get() it is taking the value out of self.item and replacing it with a None,
 //so calling .get() doesn't just read the value, it retrieves it and takes it out of it
 println!("{}", basket.is_empty());
+
+
+//Originally Basket could only hold Option<String>, but it is being modified to hold Option<T> so it can be given numbers now
+let mut b1 = Basket::new(10);
+
+println!("b1.get contents: {:?}", b1.get());
+
+b1.put(20);
+
+println!("b1.get contents: {:?}", b1.get());
+
+//Basket originally overwrites its old item with the new one in .put(), however it will be modified so that if it holds a number and is given a number, it will instead add the new number to the old number and store the result
+
+//Update:  Rust makes it a little difficult to quickly check whether a value is numeric or not at runtime, so while initial attempts were made in the basket.rs file to give it this functionality, it has been abandoned for now so that I can go on to complete the Stack struct and move on to doing other things instead.  Interestingly, the instructor of the Rust course that this project was a part of did not complete this functionality either but also doesn't address that this had occurred.
+
+
+let mut stack1 = Stack::new(vec![1,2,3]);
+
+stack1.put(4);
+println!("{:?}",stack1.get());
+println!("{:?}", stack1.is_empty());
+
+//now the Structs and their functionality is complete up to the point at which they were made in the course videos
 
 }
