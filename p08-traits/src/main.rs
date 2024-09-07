@@ -79,6 +79,21 @@ stack1.put(4);
 println!("{:?}",stack1.get());
 println!("{:?}", stack1.is_empty());
 
+let mut stack2 = Stack::new(vec!["1".to_string(),"2".to_string(),"3".to_string()]);
+
 //now the Structs and their functionality is complete up to the point at which they were made in the course videos
 
+
+
+//using the Stack and Struct interchangeably:
+add_value_to_container(&mut basket, String::from("new string"));
+add_value_to_container(&mut stack2, String::from("new string"));
+
+println!("{:?}", stack2.get());
+
+}
+
+//this is something that can add a string to either a Basket or a Struct, as long as it is a Basket or Struct that was made to hold strings.
+fn add_value_to_container<T: Container<String>>(container: &mut T, value: String) {
+    container.put(value);
 }
